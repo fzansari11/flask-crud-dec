@@ -16,7 +16,7 @@ print ("The final database path is ", final_db_path)
 
 #app.config['SQLALCHEMY_DATABASE_URI']= 'sqlite:///tasks.db'
 app.config['SQLALCHEMY_DATABASE_URI']= 'sqlite:///' + final_db_path
-
+app.config['SQLALCHEMY_DATABASE_URI']= 'mysql+pymysql://admin:Cloudberry123@database-1.c09gg8s4sv82.us-east-1.rds.amazonaws.com/tasks'
 db = SQLAlchemy(app)
 
 class Task(db.Model):
@@ -60,4 +60,4 @@ def edit_task(task_id):
     return render_template('edit.html', task=task)
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(host='0.0.0.0',debug=True)
