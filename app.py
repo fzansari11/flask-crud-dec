@@ -60,6 +60,7 @@ def add_task():
         file.save(file_path)
         upload_file_to_s3(file_path, file.filename)
         os.remove(file_path)
+        new_task.s3_url = f"s3://{BUCKET_NAME}/{file.filename}"
 
     db.session.add(new_task)
     db.session.commit()

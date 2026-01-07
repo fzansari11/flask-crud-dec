@@ -19,6 +19,9 @@
                 [Completed: {{ 'Yes' if task.completed else 'No' }}]
                 <a href="/edit/{{ task.id }}">✏️</a>
                 <a href="/delete/{{ task.id }}">❌</a>
+                {% if task.s3_url %}
+                    <a href="{{ task.s3_url }}">View Attachment</a>
+                {% endif %}
             </li>
         {% endfor %}
     </ul>
