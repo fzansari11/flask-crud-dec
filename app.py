@@ -38,6 +38,8 @@ class Task(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     title = db.Column(db.String(200), nullable=False)
     completed = db.Column(db.Boolean, default=False)
+    s3_url = db.Column(db.String(500), nullable=True)
+
 
 #Create tables within application context
 with app.app_context():
