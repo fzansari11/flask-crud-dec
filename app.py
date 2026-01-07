@@ -18,7 +18,7 @@ final_db_path = os.path.join(basedir, db_name)
 
 print ("The final database path is ", final_db_path)
 
-def get_db_secret(secret_name, region_name = 'us-east-2'):
+def get_db_secret(secret_name, region_name = 'us-east-1'):
     client = boto3.client('secretsmanager', region_name=region_name)
     try:
         get_secret_value_response = client.get_secret_value(SecretId=secret_name)
