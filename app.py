@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request, redirect
 from flask_sqlalchemy import SQLAlchemy
 import boto3
+import json
 import os
 import logging 
 
@@ -17,9 +18,20 @@ final_db_path = os.path.join(basedir, db_name)
 
 print ("The final database path is ", final_db_path)
 
-#app.config['SQLALCHEMY_DATABASE_URI']= 'sqlite:///tasks.db'
-app.config['SQLALCHEMY_DATABASE_URI']= 'sqlite:///' + final_db_path
-app.config['SQLALCHEMY_DATABASE_URI']= 'mysql+pymysql://admin:Cloudberry123@database-1.c09gg8s4sv82.us-east-1.rds.amazonaws.com/tasks'
+def get_db_secret(secret_name, region_name = 'us-east-2'):
+    client = boto3.client('secretsmanager', region_name=region_name)
+    try:
+        get_secret_value_response = client.get_secret_value(SecretId=secret_name)
+        secret = get_secret_value_response['SecretString']
+        return json.loads(secret)
+    except Exception as e:
+        logging.error(f"Error retrieving secret {secret_name}: {e}")
+        return None
+
+# Fetch credentials from Secrets Manager
+secret = get_db_secret('prod/rds/mydb')
+
+app.config['SQLALCHEMY_DATABASE_URI']= f'mysql+pymysql://{secret['username']}:{secret['password']}@{secret['host']}/{secret['dbname']}'
 db = SQLAlchemy(app)
 
 BUCKET_NAME = 'flask-dec-todo-s3'
@@ -32,6 +44,8 @@ def upload_file_to_s3(file_path, file_name):
     except Exception as e:
         logging.error(f"Error uploading file to S3: {e}")
         return None
+    
+
 
 class Task(db.Model):
     __tablename__ = 'tasks'
