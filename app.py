@@ -14,10 +14,6 @@ basedir = os.path.abspath(os.path.dirname(__file__))
 print("The base dir is ", basedir)
 db_name = 'tasks.db'
 
-final_db_path = os.path.join(basedir, db_name)
-
-print ("The final database path is ", final_db_path)
-
 def get_db_secret(secret_name, region_name = 'us-east-1'):
     client = boto3.client('secretsmanager', region_name=region_name)
     try:
