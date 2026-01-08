@@ -44,8 +44,6 @@ def upload_file_to_s3(file_path, file_name):
     except Exception as e:
         logging.error(f"Error uploading file to S3: {e}")
         return None
-    
-
 
 class Task(db.Model):
     __tablename__ = 'tasks'
@@ -60,11 +58,13 @@ with app.app_context():
     print("Creating database tables if they do not exist...")
     db.create_all()
 
+# Define routes
 @app.route('/')
 def home():
     tasks = Task.query.all()
     return render_template('index.html', tasks=tasks)
 
+# Add task with optional file upload
 @app.route('/add', methods= ['POST'])
 def add_task():
     task = request.form.get('task')
@@ -82,6 +82,7 @@ def add_task():
     db.session.commit()
     return redirect('/')
 
+# Delete task
 @app.route('/delete/<int:task_id>')
 def delete_task(task_id):
     task=Task.query.get(task_id)
@@ -89,6 +90,7 @@ def delete_task(task_id):
     db.session.commit()
     return redirect('/')
 
+# Edit task
 @app.route('/edit/<int:task_id>', methods=['GET', 'POST'])
 def edit_task(task_id):
     task = Task.query.get(task_id)
@@ -98,5 +100,6 @@ def edit_task(task_id):
         return redirect('/')
     return render_template('edit.html', task=task)
 
+# Run the app
 if __name__ == '__main__':
     app.run(host='0.0.0.0',debug=True)
