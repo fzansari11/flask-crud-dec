@@ -14,6 +14,8 @@ basedir = os.path.abspath(os.path.dirname(__file__))
 print("The base dir is ", basedir)
 db_name = 'tasks.db'
 
+LAMBDA_API = 'https://7adeci92yh.execute-api.us-east-1.amazonaws.com/default/logTaskLambda'
+
 def get_db_secret(secret_name, region_name = 'us-east-1'):
     client = boto3.client('secretsmanager', region_name=region_name)
     try:
@@ -76,6 +78,14 @@ def add_task():
 
     db.session.add(new_task)
     db.session.commit()
+    
+    # Log the task addition to the Lambda function
+    try:
+        response = request.post(LAMBDA_API, json={"task": task})
+        logging.info(f"Logged task addition to Lambda: {response.status_code}")
+    except Exception as e:
+        logging.error(f"Error logging to Lambda: {e}")
+
     return redirect('/')
 
 # Delete task
