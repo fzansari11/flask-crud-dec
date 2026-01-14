@@ -3,7 +3,8 @@ from flask_sqlalchemy import SQLAlchemy
 import boto3
 import json
 import os
-import logging 
+import logging
+import requests 
 
 app = Flask(__name__)
 
@@ -83,7 +84,7 @@ def add_task():
     
     # Log the task addition to the Lambda function
     try:
-        response = request.post(LAMBDA_API, json={"task": task})
+        response = requests.post(LAMBDA_API, json={"task": task})
         logging.info(f"Logged task addition to Lambda: {response.status_code}")
     except Exception as e:
         logging.error(f"Error logging to Lambda: {e}")
