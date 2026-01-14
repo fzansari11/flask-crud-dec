@@ -7,7 +7,9 @@ import logging
 
 app = Flask(__name__)
 
-logging.basicConfig(level=logging.INFO)
+logging.basicConfig(
+    filename = 'app.log',
+    level=logging.INFO)
 
 # Configure the database URI. Using SQLite file-based DB here
 basedir = os.path.abspath(os.path.dirname(__file__))
